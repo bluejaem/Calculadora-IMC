@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Calcule o seu IMC</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <main class="main">
+            <div class="container">
+                <h1>Calculadora de IMC</h1>
+                <form id="imcForm">
+                    <label for="weight">Peso (kg):</label>
+                    <input type="number" id="weight" name="weight" required>
+
+                    <label for="height">Altura (m):</label>
+                    <input type="number" step="0.01" id="height" name="height" required>
+
+                    <button type="submit">Calcular IMC</button>
+                </form>
+                <div id="result"></div>
+            </div>
+        </main>
+        <script src="script.js"></script>
+        <footer class="site-footer">Copyright 2025. Todos os direitos reservados.</footer>
+    </body>
+</html>
