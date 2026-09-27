@@ -1,27 +1,103 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Calcule o seu IMC</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <main class="main">
-            <div class="container">
-                <h1>Calculadora de IMC</h1>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de IMC | Diagnóstico Corporal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <header class="app-header">
+            <span class="badge">Avaliação Biométrica</span>
+            <h1>Índice de Massa Corporal</h1>
+            <p>Insira seus dados antropométricos para consultar seu estado nutricional e intervalo de peso ideal.</p>
+        </header>
+
+        <main class="card">
+            <!-- Painel Esquerdo: Entrada -->
+            <section class="panel form-panel">
                 <form id="imcForm">
-                    <label for="weight">Peso (kg):</label>
-                    <input type="number" id="weight" name="weight" required>
+                    <div class="field-group">
+                        <label for="weight">Peso corporal</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="weight" step="0.1" min="20" max="350" placeholder="Ex: 72.5" required>
+                            <span class="unit">kg</span>
+                        </div>
+                    </div>
 
-                    <label for="height">Altura (m):</label>
-                    <input type="number" step="0.01" id="height" name="height" required>
+                    <div class="field-group">
+                        <label for="height">Altura</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="height" step="0.01" min="0.5" max="2.6" placeholder="Ex: 1.75" required>
+                            <span class="unit">m</span>
+                        </div>
+                    </div>
 
-                    <button type="submit">Calcular IMC</button>
+                    <div class="actions">
+                        <button type="submit" class="btn-primary" id="btnCalculate">Calcular Diagnóstico</button>
+                        <button type="button" class="btn-ghost" id="btnReset">Redefinir</button>
+                    </div>
                 </form>
-                <div id="result"></div>
-            </div>
+            </section>
+
+            <!-- Painel Direito: Resultados e Métricas Clínicas -->
+            <section class="panel results-panel">
+                <!-- Estado Vazio (Antes do Cálculo) -->
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-icon">⚖️</div>
+                    <p class="empty-title">Aguardando dados</p>
+                    <p class="empty-desc">Preencha o peso e a altura para gerar a análise métrica completa.</p>
+                </div>
+
+                <!-- Estado com Resultado -->
+                <div id="resultContent" class="result-content hidden">
+                    <div class="imc-display">
+                        <div class="metric">
+                            <span class="metric-caption">Seu IMC</span>
+                            <span class="metric-val" id="imcNumber">00.0</span>
+                        </div>
+                        <div class="status-pill" id="statusPill">Eutrofia</div>
+                    </div>
+
+                    <!-- Régua Visual das Faixas da OMS -->
+                    <div class="gauge-wrapper">
+                        <div class="gauge-bar">
+                            <div class="gauge-marker" id="gaugeMarker"></div>
+                            <div class="gauge-segment s-under" title="Abaixo do peso (< 18.5)"></div>
+                            <div class="gauge-segment s-normal" title="Peso saudável (18.5 - 24.9)"></div>
+                            <div class="gauge-segment s-over" title="Sobrepeso (25 - 29.9)"></div>
+                            <div class="gauge-segment s-obese" title="Obesidade (≥ 30)"></div>
+                        </div>
+                        <div class="gauge-labels">
+                            <span>18.5</span>
+                            <span>25</span>
+                            <span>30</span>
+                        </div>
+                    </div>
+
+                    <div class="clinical-details">
+                        <div class="detail-box">
+                            <span class="detail-label">Faixa Saudável Estimada (OMS)</span>
+                            <span class="detail-val" id="idealWeightRange">-- kg - -- kg</span>
+                        </div>
+                        <div class="detail-box">
+                            <span class="detail-label">Diferença para Peso Saudável</span>
+                            <span class="detail-val" id="weightDifference">--</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
-        <script src="script.js"></script>
-        <footer class="site-footer">Copyright 2025. Todos os direitos reservados.</footer>
-    </body>
+
+        <footer class="app-footer">
+            <p>Parâmetros baseados nos padrões de classificação de adultos da Organização Mundial da Saúde (OMS).</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>

@@ -1,63 +1,48 @@
-#  Calculadora de IMC (Índice de Massa Corporal)
+# Calculadora e Diagnóstico de IMC
 
-Este projeto é uma aplicação web interativa desenvolvida para calcular o Índice de Massa Corporal (IMC) de um usuário com base em seu peso e altura. O objetivo é fornecer uma ferramenta rápida e acessível para monitoramento básico de saúde e classificação de peso.
+Aplicação web desenvolvida em JavaScript puro para avaliação biométrica rápida através do Índice de Massa Corporal (IMC), adotando as diretrizes de referência da Organização Mundial da Saúde (OMS).
 
-##  Sobre o Projeto
+A ferramenta processa o peso e a altura informados, calcula o índice antropométrico e gera um painel diagnóstico com categorização do estado nutricional, indicador gráfico contínuo e cálculo da margem de peso ideal para a estatura fornecida.
 
-A Calculadora de IMC foi desenvolvida como um projeto de prática de lógica de programação e manipulação do DOM (Document Object Model). Ela recebe dados numéricos, processa as informações seguindo a fórmula padrão da OMS e retorna um feedback visual instantâneo.
+## Funcionalidades
 
-##  Funcionalidades e Utilidade
+- **Cálculo de IMC em tempo real:** Determinação imediata do índice biométrico no lado do cliente, sem recarregamento da página (`preventDefault`).
+- **Classificação clínica por faixas:** Segmentação automática segundo os critérios da OMS (Baixo peso, Eutrofia/Normal, Sobrepeso e Obesidade).
+- **Indicador gráfico de dispersão:** Marcador deslizante posicionado dinamicamente sobre uma escala de faixas proporcionais entre 15 e 35 kg/m².
+- **Projeção de peso ideal:** Estimativa do intervalo saudável em quilogramas (baseado nos pontos de corte 18.5 e 24.9) e cálculo do saldo de massa necessário para atingir o intervalo de referência.
+- **Validação e sanitização de dados:** Bloqueio de submissão de valores nulos, negativos ou incoerentes com os limites fisiológicos definidos nos atributos de entrada.
+- **Limpeza de estado:** Reposição rápida do formulário e dos painéis de resultado através de botão de redefinição.
 
-* **Cálculo Instantâneo:** Realiza a operação matemática em tempo real sem necessidade de recarregar a página.
-* **Classificação de Saúde:** Além do número do IMC, o sistema informa a categoria em que o usuário se encontra:
-    * Abaixo do peso
-    * Peso normal
-    * Sobrepeso
-    * Obesidade (Graus 1, 2 e 3)
-* **Validação de Dados:** O sistema impede cálculos com valores inválidos (números negativos ou campos vazios), garantindo a integridade do resultado.
-* **Interface Amigável:** Design limpo com imagem de fundo temática e container com efeito de transparência para facilitar a leitura.
+## Lógica de Implementação
 
-## 🛠️ Tecnologias Utilizadas
+### 1. Cálculo do Índice Antropométrico
+O processamento matemático segue a relação convencional de massa por área de superfície corporal:
 
-* **HTML5:** Estruturação semântica da página (uso de tags como `<main>`, `<form>`, `<footer>`).
-* **CSS3:** Estilização completa.
-    * Uso de **Flexbox** para centralização do conteúdo e fixação do rodapé (Sticky Footer).
-    * Implementação de imagem de fundo com `background-size: cover` para responsividade.
-    * Efeito de transparência (`rgba`) no container principal.
-* **JavaScript (ES6+):** Lógica de programação e interatividade.
+$$\text{IMC} = \frac{\text{peso (kg)}}{\text{altura (m)}^2}$$
 
-## 💻 Como o Código Funciona
+### 2. Projeção de Faixa Saudável
+A amplitude ponderal recomendada para a estatura fornecida é obtida invertendo os limites normativos de IMC:
 
-### 1. Estrutura (HTML)
-O site é estruturado em um container centralizado que agrupa o formulário de entrada e a área de resultados. Foi utilizada a tag `<input type="number">` com o atributo `step="0.01"` para permitir a inserção precisa de altura em metros (ex: 1.75).
+$$\text{Peso Mínimo} = 18.5 \times \text{altura}^2$$
+$$\text{Peso Máximo} = 24.9 \times \text{altura}^2$$
 
-### 2. Estilo (CSS)
-O layout foi desenhado para manter o conteúdo sempre ao centro da tela, independente do tamanho do monitor. 
-* A propriedade `min-height: 100vh` no `body` garante que a página ocupe toda a altura da janela.
-* A classe `.main` possui `flex: 1`, o que empurra o rodapé (`footer`) sempre para o final da página, evitando que ele "flutue" no meio da tela em monitores grandes.
+Com base nesses valores, o script avalia se o peso atual do utilizador está contido no intervalo, sugerindo a variação nominal necessária para alcançar a faixa eutrófica quando aplicável.
 
-### 3. Lógica (JavaScript)
-O "cérebro" da aplicação funciona da seguinte maneira:
-1.  **Escuta de Eventos:** O script monitora o evento de `submit` do formulário.
-2.  **Prevenção de Reload:** Utilizamos `event.preventDefault()` para que a página não recarregue ao clicar no botão, permitindo uma experiência fluida (SPA - Single Page Application feel).
-3.  **Cálculo:** A fórmula aplicada é:
-    $$IMC = \frac{Peso}{Altura^2}$$
-4.  **Condicionais (If/Else):** O resultado passa por uma cadeia de verificações para definir a categoria. Exemplo:
-    ```javascript
-    if (imc < 18.5) {
-        classification = 'Abaixo do peso';
-    } else if (imc < 24.9) {
-        classification = 'Peso normal';
-    }
-    // ...continua até Obesidade grau 3
-    ```
-5.  **Validação:** Se o usuário digitar letras ou números menores que zero, o sistema exibe um alerta em vermelho pedindo valores válidos.
+### 3. Posicionamento Dinâmico na Escala
+O marcador visual é posicionado via CSS (`left: X%`) através de uma interpolação linear delimitada entre os limites de 15 e 35:
 
-##  Como executar o projeto
+$$\text{Posição (\%)} = \frac{\text{clamp}(\text{IMC}, 15, 35) - 15}{35 - 15} \times 100$$
 
-1.  Faça o clone deste repositório.
-2.  Certifique-se de ter o arquivo de imagem (ex: `foto de academia.jpg`) na mesma pasta.
-3.  Abra o arquivo `index.html` em qualquer navegador moderno.
+## Tecnologias Utilizadas
 
----
-Desenvolvido por [Seu Nome Aqui]
+- **HTML5:** Marcação semântica com foco em acessibilidade e formulários nativos.
+- **CSS3:** Estrutura responsiva com CSS Grid e Flexbox, tipografia fluida, variáveis globais e transições de estado para elementos interativos.
+- **JavaScript (Vanilla / ES6+):** Manipulação direta da árvore DOM, gestão de eventos e lógica de cálculos matemáticos sem recurso a bibliotecas externas.
+
+## Estrutura do Repositório
+
+```text
+├── index.html        Estrutura de apresentação e formulários
+├── style.css         Design tokens, grelha responsiva e estados visuais
+├── script.js         Lógica de cálculo, regras de negócio e manipulação de classes
+└── README.md         Documentação técnica do projeto
