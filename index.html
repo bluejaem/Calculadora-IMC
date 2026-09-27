@@ -3,11 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de IMC | Diagnóstico Corporal</title>
+    <title>Calculadora de IMC | Diagnóstico Biométrico</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-light: #e2e8f0;
+            --border-focus: #0f172a;
+            --primary: #0f172a;
+            --primary-hover: #1e293b;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-soft: 0 10px 30px -10px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-page);
+            background-image: none !important; /* Remove qualquer foto herdada */
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 780px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .app-header {
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background-color: #f1f5f9;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            margin-bottom: 0.75rem;
+        }
+
+        .app-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-header p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            padding: 2.2rem;
+        }
+
+        .form-panel {
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @media (max-width: 640px) {
+            .form-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+            }
+        }
+
+        .field-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 0.825rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 0.75rem 2.8rem 0.75rem 0.9rem;
+            font-size: 1rem;
+            font-family: inherit;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            background-color: #fafbfc;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+        .input-wrapper input:focus {
+            background-color: #ffffff;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
+        }
+
+        .input-wrapper .unit {
+            position: absolute;
+            right: 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 0.925rem;
+            font-weight: 600;
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.99);
+        }
+
+        .btn-ghost {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+        }
+
+        .btn-ghost:hover {
+            background-color: #f1f5f9;
+        }
+
+        .results-panel {
+            background-color: #fcfcfd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .empty-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+        }
+
+        .empty-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .result-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .imc-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 1.25rem;
+        }
+
+        .metric-caption {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .metric-val {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .status-pill {
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.825rem;
+            font-weight: 600;
+        }
+
+        .gauge-wrapper {
+            position: relative;
+            padding: 0.8rem 0 0.2rem 0;
+        }
+
+        .gauge-bar {
+            position: relative;
+            height: 8px;
+            border-radius: 4px;
+            display: flex;
+        }
+
+        .gauge-segment {
+            height: 100%;
+        }
+
+        .s-under  { width: 25%; background-color: #bae6fd; border-radius: 4px 0 0 4px; }
+        .s-normal { width: 35%; background-color: #a7f3d0; }
+        .s-over   { width: 20%; background-color: #fde68a; }
+        .s-obese  { width: 20%; background-color: #fecaca; border-radius: 0 4px 4px 0; }
+
+        .gauge-marker {
+            position: absolute;
+            top: -5px;
+            width: 4px;
+            height: 18px;
+            background-color: var(--primary);
+            border-radius: 2px;
+            transform: translateX(-50%);
+            box-shadow: 0 0 0 2px #fff;
+            transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            padding: 0 20%;
+        }
+
+        .clinical-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .detail-box {
+            background-color: #ffffff;
+            border: 1px solid var(--border-light);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-val {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .app-footer {
+            text-align: center;
+        }
+
+        .app-footer p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
     <div class="app-wrapper">
@@ -18,7 +370,7 @@
         </header>
 
         <main class="card">
-            <!-- Painel Esquerdo: Entrada -->
+            <!-- Painel Esquerdo -->
             <section class="panel form-panel">
                 <form id="imcForm">
                     <div class="field-group">
@@ -44,16 +396,14 @@
                 </form>
             </section>
 
-            <!-- Painel Direito: Resultados e Métricas Clínicas -->
+            <!-- Painel Direito -->
             <section class="panel results-panel">
-                <!-- Estado Vazio (Antes do Cálculo) -->
                 <div id="emptyState" class="empty-state">
                     <div class="empty-icon">⚖️</div>
                     <p class="empty-title">Aguardando dados</p>
                     <p class="empty-desc">Preencha o peso e a altura para gerar a análise métrica completa.</p>
                 </div>
 
-                <!-- Estado com Resultado -->
                 <div id="resultContent" class="result-content hidden">
                     <div class="imc-display">
                         <div class="metric">
@@ -63,7 +413,6 @@
                         <div class="status-pill" id="statusPill">Eutrofia</div>
                     </div>
 
-                    <!-- Régua Visual das Faixas da OMS -->
                     <div class="gauge-wrapper">
                         <div class="gauge-bar">
                             <div class="gauge-marker" id="gaugeMarker"></div>
@@ -98,6 +447,76 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const imcForm = document.getElementById('imcForm');
+        const weightInput = document.getElementById('weight');
+        const heightInput = document.getElementById('height');
+        const btnReset = document.getElementById('btnReset');
+
+        const emptyState = document.getElementById('emptyState');
+        const resultContent = document.getElementById('resultContent');
+        const imcNumber = document.getElementById('imcNumber');
+        const statusPill = document.getElementById('statusPill');
+        const gaugeMarker = document.getElementById('gaugeMarker');
+        const idealWeightRange = document.getElementById('idealWeightRange');
+        const weightDifference = document.getElementById('weightDifference');
+
+        const CLASSIFICATIONS = [
+            { max: 18.5, label: 'Abaixo do peso', color: '#0369a1', bg: '#e0f2fe' },
+            { max: 24.9, label: 'Peso saudável', color: '#047857', bg: '#d1fae5' },
+            { max: 29.9, label: 'Sobrepeso', color: '#b45309', bg: '#fef3c7' },
+            { max: Infinity, label: 'Obesidade', color: '#b91c1c', bg: '#fee2e2' }
+        ];
+
+        imcForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const weight = parseFloat(weightInput.value);
+            const height = parseFloat(heightInput.value);
+
+            if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+                alert('Por favor, insira valores válidos para peso e altura.');
+                return;
+            }
+
+            const imc = weight / (height * height);
+
+            const minHealthyWeight = (18.5 * (height * height)).toFixed(1);
+            const maxHealthyWeight = (24.9 * (height * height)).toFixed(1);
+
+            let category = CLASSIFICATIONS.find(c => imc < c.max);
+
+            let diffText = 'Dentro da faixa';
+            if (weight < minHealthyWeight) {
+                const diff = (minHealthyWeight - weight).toFixed(1);
+                diffText = `Ganhar ~${diff} kg`;
+            } else if (weight > maxHealthyWeight) {
+                const diff = (weight - maxHealthyWeight).toFixed(1);
+                diffText = `Perder ~${diff} kg`;
+            }
+
+            const clampedImc = Math.min(Math.max(imc, 15), 35);
+            const markerPercent = ((clampedImc - 15) / (35 - 15)) * 100;
+
+            imcNumber.textContent = imc.toFixed(1);
+            statusPill.textContent = category.label;
+            statusPill.style.color = category.color;
+            statusPill.style.backgroundColor = category.bg;
+
+            gaugeMarker.style.left = `${markerPercent}%`;
+            idealWeightRange.textContent = `${minHealthyWeight} kg - ${maxHealthyWeight} kg`;
+            weightDifference.textContent = diffText;
+
+            emptyState.classList.add('hidden');
+            resultContent.classList.remove('hidden');
+        });
+
+        btnReset.addEventListener('click', function () {
+            imcForm.reset();
+            resultContent.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            weightInput.focus();
+        });
+    </script>
 </body>
 </html>
